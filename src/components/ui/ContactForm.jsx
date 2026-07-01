@@ -6,31 +6,65 @@ export function ContactForm({ className = "" }) {
   const headingId = useId();
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
-    if (status !== "idle") setStatus("idle");
+    if (status !== "idle") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (form.botcheck) {
+      setForm(initialForm);
+      setStatus("success");
+      setErrorMessage("");
+      return;
+    }
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    if (!accessKey) {
+      setStatus("error");
+      setErrorMessage("Contact form is not configured. Please email me directly.");
+      return;
+    }
+
     setStatus("sending");
+    setErrorMessage("");
 
     try {
-      const response = await fetch("/api/contact", {
+      const formData = new FormData();
+      formData.append("access_key", accessKey);
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("message", form.message);
+      formData.append("subject", "New message from Maan Grover portfolio");
+      formData.append("from_name", "Maan Grover Portfolio");
+      formData.append("replyto", form.email);
+      formData.append("botcheck", form.botcheck);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: formData,
       });
       const result = await response.json().catch(() => ({}));
 
-      if (!response.ok || !result.success) throw new Error(result.error || "Message failed");
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || result.error || "Something went wrong. Please email me directly.");
+      }
 
       setForm(initialForm);
       setStatus("success");
-    } catch {
+    } catch (error) {
       setStatus("error");
+      setErrorMessage(error instanceof Error && error.message
+        ? error.message
+        : "Something went wrong. Please email me directly.");
     }
   };
 
@@ -62,7 +96,7 @@ export function ContactForm({ className = "" }) {
           <button type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending..." : "Send Message"}</button>
           <p className={`contact-form-status ${status}`} role="status" aria-live="polite">
             {status === "success" ? "Message sent — I’ll get back to you soon." : null}
-            {status === "error" ? "Something went wrong. Please email me directly." : null}
+            {status === "error" ? errorMessage : null}
           </p>
         </div>
       </form>
