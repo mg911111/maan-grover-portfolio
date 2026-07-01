@@ -367,20 +367,22 @@ function ContactPanel({ content }) {
 
         <div className="contact-group-stack">
           {content.groups.map((group) => (
-            <section className="contact-group" key={group.title}>
-              <h3>{group.title}</h3>
-              <div className="contact-grid">
-                {group.cards.map((card) => (
-                  <article className="contact-card" key={card.label}>
-                    <span>{card.label}</span>
-                    <strong>{card.value}</strong>
-                    {card.href ? <ActionLink action={{ label: card.action, href: card.href }} /> : <p>{card.action}</p>}
-                  </article>
-                ))}
-              </div>
-            </section>
+            <div className="contact-group-block" key={group.title}>
+              <section className="contact-group">
+                <h3>{group.title}</h3>
+                <div className="contact-grid">
+                  {group.cards.map((card) => (
+                    <article className="contact-card" key={card.label}>
+                      <span>{card.label}</span>
+                      <strong>{card.value}</strong>
+                      {card.href ? <ActionLink action={{ label: card.action, href: card.href }} /> : <p>{card.action}</p>}
+                    </article>
+                  ))}
+                </div>
+              </section>
+              {group.title === "Professional" ? <ContactForm /> : null}
+            </div>
           ))}
-          <ContactForm />
         </div>
       </div>
     );

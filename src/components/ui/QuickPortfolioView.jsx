@@ -614,7 +614,7 @@ export function PortfolioWebsite({
               </article>
             ))}
           </div>
-          <ContactForm className="reveal-item website-contact-form" />
+          <ContactForm className="website-contact-form" />
         </section>
       </main>
     </section>
