@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getSectionById } from "../../data/sections";
 import { getDestinationAnchorLabel } from "../../data/destinationAnchors";
 import { getPortfolioContent } from "../../data/portfolioContent";
+import { ContactForm } from "./ContactForm";
 
 const CLOSE_ANIMATION_MS = 180;
 
@@ -379,6 +380,7 @@ function ContactPanel({ content }) {
               </div>
             </section>
           ))}
+          <ContactForm />
         </div>
       </div>
     );

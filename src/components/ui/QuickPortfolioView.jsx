@@ -4,6 +4,7 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { Box3, Vector3 } from "three";
 import { getPortfolioContent } from "../../data/portfolioContent";
 import { AmbientField } from "./AmbientField";
+import { ContactForm } from "./ContactForm";
 
 function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -613,6 +614,7 @@ export function PortfolioWebsite({
               </article>
             ))}
           </div>
+          <ContactForm className="reveal-item website-contact-form" />
         </section>
       </main>
     </section>
